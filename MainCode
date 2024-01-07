@@ -1,0 +1,293 @@
+import pyttsx3
+import speech_recognition as sr
+import datetime
+import wikipedia
+import webbrowser
+import os
+import random
+import time
+from googlesearch import search
+import pywhatkit
+from tkinter import *
+from tkinter import messagebox
+from AppOpener import run
+
+
+
+#for button
+tkWindow = Tk()  
+tkWindow.geometry('400x150')  
+tkWindow.title('NEO- The voice assistant')
+
+#for background colour
+tkWindow.configure(bg="black")
+
+#for gif
+frames = [PhotoImage(file="C:/Users/RAJ NANDAN/OneDrive/Documents/python/project sem 3/neo5.gif",format = 'gif -index %i' %(i)) for i in range(31)]
+#'C:/Users/RAJ NANDAN/OneDrive/Documents/python/project sem 3/neo5.gif'  
+#"C:/Users/RAJ NANDAN/OneDrive/Desktop/neo6.gif"
+def update(ind):
+    frame = frames[ind]
+    ind += 1
+    #print(ind)
+    if ind>30: #With this condition it will play gif infinitely
+        ind = 0
+    label.configure(image=frame)
+    tkWindow.after(100, update, ind)
+label = Label(tkWindow)
+label.pack()
+tkWindow.after(0, update, 0)
+
+
+
+
+def showMsg(): 
+    engine = pyttsx3.init('sapi5')
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[0].id)
+    rate = engine.getProperty('rate')
+    engine.setProperty('rate',170) 
+
+    def speak(audio):
+        engine.say(audio)
+        engine.runAndWait()
+    def wishme():
+        hour = int(datetime.datetime.now().hour)
+        if hour>=0 and hour<12:
+            speak("Good Morning humans! how may i help you!")
+        elif hour>=12 and hour<18:
+            speak("Good Afternoon humans! how may i help you!")
+        else:
+            speak("Good Evening humans! how may i help you!")
+
+    # speak("Hey humans")
+    wishme()
+    def takeCommand():
+
+        r = sr.Recognizer() 
+        with sr.Microphone() as source:
+            print("Listening...")
+            r.pause_threshold = 1
+            r.adjust_for_ambient_noise(source)
+            audio = r.listen(source)
+
+        try:
+            print("Recognizing...")
+            query = r.recognize_google(audio)
+            print(f"User said: {query}\n")
+        except Exception as e:
+    
+            print("can't recognize, please say it again...")
+            return "None"
+        return query
+    
+    def Whatsapp():
+      speak("tell me the name of the person!")
+      name = takeCommand()
+        
+      if 'Prachi' in name:
+        speak("tell me the message!")
+        msg = takeCommand()
+        speak("tell me the time in 24 hours format please!")
+        hour = int(takeCommand())
+        speak("tell me the time in minutes also...")
+        min = int(takeCommand())
+        pywhatkit.sendwhatmsg("+919368016149", msg, hour, min, 20)
+        speak("Ok, sending message!")
+
+      elif 'Pratham' in name:
+        speak("tell me the message!")
+        msg = takeCommand()
+        speak("tell me the time in 24 hours format please!")
+        hour = int(takeCommand())
+        speak("tell me the time in minutes also...")
+        min = int(takeCommand())
+        pywhatkit.sendwhatmsg("+918851160172", msg, hour, min, 20)
+        speak("Ok, sending message!")
+
+      elif 'yanya' in name:
+        speak("tell me the message!")
+        msg = takeCommand()
+        speak("tell me the time in 24 hours format please!")
+        hour = int(takeCommand())
+        speak("tell me the time in minutes also...")
+        min = int(takeCommand())
+        pywhatkit.sendwhatmsg("+919997147870", msg, hour, min, 20)
+        speak("Ok, sending message!")
+
+      elif 'Virat' in name:
+        speak("tell me the message!")
+        msg = takeCommand()
+        speak("tell me the time in 24 hours format please!")
+        hour = int(takeCommand())
+        speak("tell me the time in minutes also...")
+        min = int(takeCommand())
+        pywhatkit.sendwhatmsg("+917906649414", msg, hour, min, 20)
+        speak("Ok, sending message!")
+
+      else:
+        speak("match not found, please say it again")
+        name = takeCommand()
+
+    
+    query = takeCommand().lower()
+
+   #to search any information from wikipedia
+    if 'wikipedia' in query:
+            speak("Searching Wikipedia...")
+            query = query.replace("wikipedia", "")
+            results = wikipedia.summary(query,sentences=2)
+            speak("According to Wikipedia ")
+            speak(results)
+            
+    #to open youtube in your default browser
+    elif 'open youtube' in query:
+        webbrowser.open("youtube.com")
+        print("opening youtube...")
+        speak("opening youtube")
+
+    #to open instagram in your default browser
+    elif 'open instagram' in query:
+        webbrowser.open("instagram.com")
+        print("opening instagram...")
+        speak("opening instagram")
+
+    #to open google in your default browser
+    elif 'open google' in query:
+        webbrowser.open("google.com")
+        print("opening google...")
+        speak("opening google")
+
+    #to play random songs from your device
+    elif 'play music' in query:
+        path= 'D:\music'
+        music_files = os.listdir('D:\music')
+        selected_file = random.choice(music_files)
+        os.startfile(os.path.join('D:\music',selected_file))
+        speak("Playing music...")
+
+    #to play next song
+    elif 'next song' in query:
+        path= 'D:\music'
+        music_files = os.listdir('D:\music')
+        selected_file = random.choice(music_files)
+        os.startfile(os.path.join('D:\music',selected_file))
+        speak("Playing next song...")
+
+    #to tell the time
+    elif 'the time' in query:
+        strTime= datetime.datetime.now().strftime("%I hours %M minutes %p")
+        print(strTime)
+        speak(f"the time is{strTime}")
+
+    #to generate random password
+    elif 'generate password' in query:
+        speak("ok sir, here is your password")
+
+        lower_case="abcdefghijklmnopqrstuvwxyz"
+        upper_case="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        numbers="0123456789"
+        symbol="!@#$%^&*?"
+
+        Use_for=lower_case + upper_case + numbers + symbol
+
+        length_for_pass = 8
+
+        password = "".join(random.sample(Use_for,length_for_pass))
+
+        print("Your generated password is :"+ password)
+
+    #who are you
+    elif 'who are you' in query:
+        print("I am Neo, a python based personal assistant")
+        speak("I am Neo, a python based personal assistant")
+
+    #setting a reminder message
+    elif 'set a reminder' in query:
+        reminder = query.replace("set a reminder", "")
+        reminder = reminder.replace("neo","")
+        speak("ok! you have set the reminder" + reminder)
+        remember = open('data.txt', 'w')
+        remember.write(reminder)
+        remember.close()
+
+    #reading the reminder msg
+    elif 'any reminder' in query:
+        remember =open('data.txt','r')
+        speak("yes! you have a reminder " + remember.read())
+
+    #another reminder message
+    elif 'set another reminder' in query:
+        newreminder = query.replace("set another reminder", "")
+        newreminder = newreminder.replace("neo","")
+        speak("ok sir! you have set the reminder" + newreminder)
+        remember_ = open('newdata.txt', 'w')
+        remember_.write(newreminder)
+        remember_.close()
+
+    #read another reminder message
+    elif 'any other reminder' in query:
+        remember_ =open('newdata.txt','r')
+        speak("yes sir! you have a reminder about" + remember_.read())
+
+    #for google search 
+    elif 'tell me about' in query:
+        query = query.replace("tell me about", "")
+        speak("this is what I found on web about"+ query)
+        query = query.replace("neo", "")
+        pywhatkit.search(query)  
+
+    #for whatsapp message 
+    elif 'whatsapp message' in query:
+        Whatsapp()
+
+    #opening Netflix app
+    elif 'open netflix' in query:
+        run("Netflix")
+        speak("opening Netflix")
+    
+    #opening Ms Word
+    elif 'open ms word' in query:
+        run("Word")
+        speak("opening Ms Word")
+    
+    #opening Ms Excel
+    elif 'open ms excel' in query:
+        run("Excel")
+        speak("opening Ms Excel")
+    
+    #opening Notepad
+    elif 'open notepad' in query:
+        run("Notepad")
+        speak("opening Notepad")
+
+    #opening Camera
+    elif 'open camera' in query:
+        run("Camera")
+        speak("opening camera")
+
+    #opening Calculator
+    elif 'open calculator' in query:
+        run("Calculator")
+        speak("opening calculator")
+
+    #ifmatch not found
+    else:
+        speak("Sorry can't understand!")
+        speak("Thank you!") 
+
+        
+button = Button(tkWindow,
+	text = 'click here to speak',
+    bg='yellow',
+    activebackground='green',
+    command = showMsg)
+
+#to adjust button position
+button.pack()  
+button.pack(side=BOTTOM, padx=15, pady=100)
+button.bg='green'
+  
+
+
+tkWindow.mainloop()
