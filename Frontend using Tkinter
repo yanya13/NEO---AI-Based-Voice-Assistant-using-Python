@@ -1,0 +1,53 @@
+import pyttsx3
+import speech_recognition as sr
+import datetime
+import wikipedia
+import webbrowser
+import os
+import random
+import time
+from googlesearch import search
+import pywhatkit
+from tkinter import *
+from tkinter import messagebox
+
+tkWindow = Tk()  
+tkWindow.geometry('400x150')  
+tkWindow.title('NEO- The voice assistant')
+
+#for background colour
+tkWindow.configure(bg="black")
+
+
+def showMsg(): 
+    engine = pyttsx3.init('sapi5')
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[0].id)
+    rate = engine.getProperty('rate')
+    engine.setProperty('rate',170) 
+
+    def speak(audio):
+        engine.say(audio)
+        engine.runAndWait()
+    def wishme():
+        hour = int(datetime.datetime.now().hour)
+        if hour>=0 and hour<12:
+            speak("Good Morning humans! how may i help you!")
+        elif hour>=12 and hour<18:
+            speak("Good Afternoon humans! how may i help you!")
+        else:
+            speak("Good Evening humans! how may i help you!")
+button = Button(tkWindow,
+	text = 'click here to speak',
+    bg='grey',
+    activebackground='green',
+    command = showMsg)
+
+#to adjust button position
+button.pack()  
+button.pack(side=BOTTOM, padx=15, pady=160)
+button.bg='green'
+  
+
+
+tkWindow.mainloop()
